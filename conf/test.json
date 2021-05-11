@@ -1,0 +1,14 @@
+{
+    "default_dest_url": "http://localhost:8081",
+    "mappings": [
+        {"path": "/test1", "dest_url": "http://127.0.0.1:8081"},
+        {"path": "/test2", "dest_url": "http://127.0.0.1:8081"},
+        {"path": "/test3", "dest_url": "http://127.0.0.1:8081"}
+    ],
+    "loggers": [
+        {"level": "1", "description": "debug", "filepath": "./logs/debug.log", "format": "[%D] %m", "class": "AsyncLogger"} ,
+        {"level": "2", "description": "info", "filepath": "./logs/info.log", "format": "[%D] %m", "class": "AsyncLogger"} ,
+        {"level": "5", "description": "access", "filepath": "./logs/access.log", "format": "[%D] %m", "class": "AsyncLogger"} ,
+        {"level": "6", "description": "debug", "filepath": "./logs/result.log", "format": "[%D] %m", "class": "AsyncLogger"}
+    ]
+}
