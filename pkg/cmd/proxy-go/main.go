@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"github.com/proxy-go/pkg/config"
@@ -8,6 +9,8 @@ import (
 	"github.com/proxy-go/pkg/proxy"
 	"net/http"
 	"os"
+	"os/signal"
+	"time"
 )
 
 type CmdInput struct {
@@ -37,7 +40,32 @@ func main() {
 		panic(err)
 	}
 
-	if err = http.ListenAndServe(fmt.Sprintf(":%d", cmdInput.Port), mux); err != nil {
-		panic(err)
+	srv := &http.Server{
+		Addr:         fmt.Sprintf(":%d", cmdInput.Port),
+		Handler:      mux,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
+
+	closeCh := make(chan struct{})
+	go func() {
+		sigint := make(chan os.Signal, 1)
+		signal.Notify(sigint, os.Interrupt)
+		<-sigint
+
+		if err := srv.Shutdown(context.Background()); err != nil {
+			log.Info("HTTP server Shutdown: %v", err)
+		}
+		close(closeCh)
+	}()
+
+	log.Info("START PROXY SERVER PORT:%d CONF:%s", cmdInput.Port, cmdInput.ConfFilePath)
+
+	if err = srv.ListenAndServe(); err != http.ErrServerClosed {
+		log.Error("HTTP server ListenAndServe: %v", err)
+	}
+
+	log.Info("STOP PROXY SERVER PORT:%d CONF:%s", cmdInput.Port, cmdInput.ConfFilePath)
+
+	<-closeCh
 }
