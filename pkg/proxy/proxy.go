@@ -1,7 +1,7 @@
 package proxy
 
 import (
-	"github.com/proxy-go/pkg/log"
+	"github.com/tuyy/proxy-go/pkg/log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"

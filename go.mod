@@ -1,4 +1,4 @@
-module github.com/proxy-go
+module github.com/tuyy/proxy-go
 
 go 1.16
 
